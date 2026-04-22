@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TV Series Search</title>
+</head>
+<body>
+
+  <h1>TV Series Search</h1>
+
+  <form>
+  <input id="query" name="q" type="text" placeholder="Enter TV series name">
+  <input type="submit" value="Search">
+  </form>
+
+  <script>
+    const form = document.querySelector('form');
+
+    form.addEventListener('submit', async function (event) {
+      event.preventDefault();
+      console.clear();
+
+      const query = document.getElementById('query').value;
+
+      if (!query) {
+        console.log("Please enter a search term");
+        return;
+      }
+
+      try {
+        const response = await fetch(`https://api.tvmaze.com/search/shows?q=${encodeURIComponent(query)}`);
+        const data = await response.json();
+
+        if (data.length === 0) {
+          console.log("No results found");
+          return;
+        }
+
+        data.forEach(item => {
+          const show = item.show;
+
+          console.log("Name:", show.name);
+          console.log("Genres:", show.genres.join(", ") || "N/A");
+          console.log("Language:", show.language || "N/A");
+          console.log("Rating:", show.rating.average || "N/A");
+          console.log("Premiered:", show.premiered || "N/A");
+          console.log("----------------------");
+        });
+
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    });
+  </script>
+
+</body>
+</html>
